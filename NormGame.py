@@ -8,27 +8,24 @@ class Jugadores():
         self.Vengefulness = V
 
 def Imprimir_Jugador(j, Personas):
-    print "Score: " + str(Personas[j].Score)
-    print "Boldness: " + str(Personas[j].Boldness)
-    print "Vengefulness: " + str(Personas[j].Vengefulness)
-
-
+    print("Score: " + str(Personas[j].Score))
+    print("Boldness: " + str(Personas[j].Boldness))
+    print("Vengefulness: " + str(Personas[j].Vengefulness))
 
 Personas = []
 
 for i in range(0,20):
     Personas.append(Jugadores(0, uniform(0,1),uniform(0,1)))
 
-
-Imprimir_Jugador(19, Personas)
-
-for j in Personas:
+for u in Personas:
     s = uniform(0,1)
-    b = j.Boldness
+    b = u.Boldness
     if s<b:
-        print(Personas[j].Score)
-        Personas[j].Score +=3
-        print(Personas[j].Score)
-        for y in Personas and y!=j:
-            Personas[y].Score += -1
-            print(Personas[y].Score)
+        u.Score +=3
+        for y in Personas:
+            if y!=u:
+                y.Score += -1
+                
+
+
+
