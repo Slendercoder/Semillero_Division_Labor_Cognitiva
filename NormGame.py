@@ -23,8 +23,18 @@ for u in Personas:
     if s<b:
         u.Score +=3
         for y in Personas:
+            s1= uniform(0,1)
             if y!=u:
                 y.Score += -1
+            elif s1<s and y!=u:
+                r = uniform(0,1)
+                if r<y.Vengefulness:
+                    u.Score +=-9
+                    y.Score += -2
+
+            
+for l in range(0,20):
+    Imprimir_Jugador(l, Personas)
                 
 
 
