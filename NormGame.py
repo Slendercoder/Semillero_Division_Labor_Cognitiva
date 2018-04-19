@@ -2,6 +2,11 @@
 from random import uniform
 from random import randint
 import numpy as np
+
+# *******************************************************************
+# DEFINICIONES DE OBJETOS Y FUNCIONES
+# *******************************************************************
+
 class Jugadores():
     def __init__(self, S, B, V):
         self.Score = S
@@ -13,11 +18,7 @@ def Imprimir_Jugador(j, Personas):
     print("Boldness: " + str(Personas[j].Boldness))
     print("Vengefulness: " + str(Personas[j].Vengefulness))
 
-Personas = []
-Scores =[]
-for i in range(0,20):
-    Personas.append(Jugadores(0, uniform(0,1),uniform(0,1)))
-def Inicializar(Poblacion):
+def Iteracion(Poblacion):
     for u in Poblacion:
         for y in range(0,3):
             s = uniform(0,1)
@@ -33,32 +34,62 @@ def Inicializar(Poblacion):
                         if r<y.Vengefulness:
                             u.Score +=-9
                             y.Score += -2
-Inicializar(Personas)
+    return Poblacion
 
-for j in range(0,20):                            
-    Imprimir_Jugador(j, Personas)
+# *******************************************************************
 
-def Anadir_scores():
-    for u in Personas:
-        Scores.append(float(u.Score))
-    
+# Inicializamos las variables
+Personas = []
+Scores =[]
+# Falta inicializar lista de Boldness y Vengefulness
 
+# Creamos la poblacion inicial de manera aleatoria
+for i in range(0,20):
+    Personas.append(Jugadores(0, uniform(0,1),uniform(0,1)))
 
-Anadir_scores()
-print(Scores)
-mean = np.mean(Scores)
+# Determina el puntaje total de las personas
+Personas = Iteracion(Personas)
+# for j in range(0,20):
+#     Imprimir_Jugador(j, Personas)
+Scores.append([u.Score for u in Personas])
+# Lo mismo para Boldness y Vengefulness
 
+# Halla el promedio de los puntajes y halla la desvacion etandar
+M = np.mean(Scores)
+print "El promedio de scores es: " + str(M)
 std_deviation = np.std(Scores)
-print(std_deviation)
+print "La desv. est. de scores es: " + str(std_deviation)
 
-Personas_2 = []
-for i in Personas:
-    if ((i.Score-mean)/std_deviation)<1:
-        for u in range(0,1):
-            Personas_2.append(Jugadores(0, uniform(0,1),uniform(0,1)))
-    elif ((i.Score-mean)/std_deviation)<1 and ((i.Score-mean)/std_deviation)> -1:
-        Personas_2.append(Jugadores(0, uniform(0,1),uniform(0,1)))
+# Identifica a los buenos y a los regulares
+indices_buenos = []
+indices_regulares = []
 
+for i in range(len(Personas)):
+    x = (Personas[i].Score-M)/std_deviation
+    if (x) >= 1: indices_buenos.append(i)
+    elif x > -1: indices_regulares.append(i)
 
+print "Lista de buenos (tamano " + str(len(indices_buenos)) + ")"
+print indices_buenos
+print "Lista de regulares (tamano " + str(len(indices_regulares)) + ")"
+print indices_regulares
 
-print(len(Personas_2))
+# Se crea una nueva lista dependiendo de la descendencia de los buenos y los regulares
+Personas_nuevas =[]
+for i in indices_buenos:
+    Personas_nuevas.append(Personas[i])
+    Personas_nuevas.append(Personas[i])
+
+print "tamano de los nuevos buenos: " + str(len(Personas_nuevas))
+
+for i in indices_regulares:
+    Personas_nuevas.append(Personas[i])
+print "Tamano de los nuevos regulares: " + str(len(Personas_nuevas))
+
+if len(Personas_nuevas)<=20:
+    Personas = Personas_nuevas
+    x = 20 - len(Personas)
+    for i in range(x):
+        Personas.append(Jugadores(0, uniform(0,1),uniform(0,1)))
+else:
+    Personas = Personas_nuevas[:20]
