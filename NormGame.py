@@ -3,6 +3,7 @@
 from random import uniform
 from random import randint
 import numpy as np
+import matplotlib.pyplot as plt
 
 # *******************************************************************
 # DEFINICIONES DE OBJETOS Y FUNCIONES
@@ -21,7 +22,7 @@ def Imprimir_Jugador(j, Personas):
 
 def Iteracion(Poblacion):
     for u in Poblacion:
-        for y in range(0,3):
+        for y in range(0,4):
             s = uniform(0,1)
             b = u.Boldness
             if s<b:
@@ -38,6 +39,12 @@ def Iteracion(Poblacion):
     return Poblacion
 
 # *******************************************************************
+# PARAMETROS DEL MODELO
+# *******************************************************************
+
+NumGeneraciones = 100
+
+# *******************************************************************
 
 # Inicializamos las variables
 Personas = []
@@ -51,63 +58,86 @@ for i in range(0,20):
     Personas.append(Jugadores(0, uniform(0,1),uniform(0,1)))
 #Creamos un bucle para iterar 100 nuevas generaciones
 
-for y in range(0,99):
-# Determina el puntaje total de las personas
-	Personas = Iteracion(Personas)
-	# for j in range(0,20):
-	#     Imprimir_Jugador(j, Personas)
-	Scores.append([u.Score for u in Personas])
-	Boldness_1.append([u.Boldness for u in Personas])
-	Vengefulness_1.append([u.Vengefulness for u in Personas])
+print "Corriendo iteraciones..."
+for y in range(0,NumGeneraciones):
+    # Corre cuatro veces la iteración del juego
+    Personas = Iteracion(Personas)
+
+    Scores.append([u.Score for u in Personas])
+    Boldness_1.append([u.Boldness for u in Personas])
+    Vengefulness_1.append([u.Vengefulness for u in Personas])
 
 
-	# Halla los promedios de los Scores, Vengefulness y Boldness y halla la desvacion 			estándar de los Scores  
-	M = np.mean(Scores)
-	print "El promedio de scores es: " + str(M)
-	std_deviation = np.std(Scores)
-	print "La desv. est. de scores es: " + str(std_deviation)
+    # Halla los promedios de los Scores, Vengefulness y Boldness y halla la desvacion 			estándar de los Scores
+    M = np.mean(Scores)
+    print "El promedio de scores es: " + str(M)
+    std_deviation = np.std(Scores)
+    print "La desv. est. de scores es: " + str(std_deviation)
 
-	M = np.mean(Boldness_1)
-	print "El promedio de boldness es: " + str(M)
+    # M = np.mean(Boldness_1)
+    # print "El promedio de boldness es: " + str(M)
+    #
+    # M = np.mean(Vengefulness_1)
+    # print "El promedio de vengefulness es: " + str(M)
 
-	M = np.mean(Vengefulness)
-	print "El promedio de vengefulness es: " + str(M)
 
+    # Identifica a los buenos y a los regulares
+    indices_buenos = []
+    indices_regulares = []
 
-	# Identifica a los buenos y a los regulares
-	indices_buenos = []
-	indices_regulares = []
+    for i in range(len(Personas)):
+        x = (Personas[i].Score-M)/std_deviation
+        if (x) >= 1: indices_buenos.append(i)
+        elif x > -1: indices_regulares.append(i)
 
-	for i in range(len(Personas)):
-	    x = (Personas[i].Score-M)/std_deviation
-	    if (x) >= 1: indices_buenos.append(i)
-	    elif x > -1: indices_regulares.append(i)
+    print "Lista de buenos (tamano " + str(len(indices_buenos)) + ")"
+    print indices_buenos
+    print "Lista de regulares (tamano " + str(len(indices_regulares)) + ")"
+    print indices_regulares
 
-	print "Lista de buenos (tamano " + str(len(indices_buenos)) + ")"
-	print indices_buenos
-	print "Lista de regulares (tamano " + str(len(indices_regulares)) + ")"
-	print indices_regulares
+    # Se crea una nueva lista dependiendo de la descendencia de los buenos y los 			regulares
+    Personas_nuevas =[]
+    for i in indices_buenos:
+        Personas_nuevas.append(Personas[i])
+        Personas_nuevas.append(Personas[i])
 
-	# Se crea una nueva lista dependiendo de la descendencia de los buenos y los 			regulares
-	Personas_nuevas =[]
-	for i in indices_buenos:
-	    Personas_nuevas.append(Personas[i])
-	    Personas_nuevas.append(Personas[i])
+    print "tamano de los nuevos buenos: " + str(len(Personas_nuevas))
 
-	print "tamano de los nuevos buenos: " + str(len(Personas_nuevas))
+    for i in indices_regulares:
+        Personas_nuevas.append(Personas[i])
 
-	for i in indices_regulares:
-	    Personas_nuevas.append(Personas[i])
-	print "Tamano de los nuevos regulares: " + str(len(Personas_nuevas))
+    print "Tamano de los nuevos regulares: " + str(len(Personas_nuevas))
 
-	if len(Personas_nuevas)<=20:
-	    Personas = Personas_nuevas
-	    x = 20 - len(Personas)
-	    for i in range(x):
-		Personas.append(Jugadores(0, uniform(0,1),uniform(0,1)))
-	else:
-		Personas = Personas_nuevas[:20]
+    if len(Personas_nuevas)<=20:
+        Personas = Personas_nuevas
+        x = 20 - len(Personas)
+        for i in range(x):
+            Personas.append(Jugadores(0, uniform(0,1),uniform(0,1)))
+    else:
+        Personas = Personas_nuevas[:20]
 
-Scores =[]
-Boldness_1 =[]
-Vengefulness_1 = []
+print "Listo!"
+
+print "Dibujando..."
+f, axarr = plt.subplots(3, sharex=True)
+axarr[0].set_ylabel('Score')
+x = [np.mean(u) for u in Scores]
+y = [np.mean(u) for u in Boldness_1]
+z = [np.mean(u) for u in Vengefulness_1]
+axarr[0].plot(x)
+axarr[1].plot(y)
+axarr[2].plot(z)
+axarr[0].set_title('')
+# axarr[1].scatter(x, y)
+plt.show()
+
+# fig = plt.figure()
+# ax1 = fig.add_subplot(111)
+# #ax1.set_title("Temperatura del panal vs. tiempo")
+# # ax1.set_xlabel('t (time)')
+# # ax1.set_ylabel('T (temperature)')
+# # ax1.set_ylim([29, 33])
+# ax1.plot([np.mean(u) for u in Scores], marker="v", ls='-') # , 'x', c = 'black', linewidth=4)
+# ax1.plot([np.mean(u) for u in Boldness_1], marker="o",ls='-') # , 'x', c = 'black', linewidth=4)
+# plt.show()
+# #ax1.plot(Tp, c='black')
