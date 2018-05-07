@@ -4,6 +4,7 @@ from random import uniform
 from random import randint
 import numpy as np
 import matplotlib.pyplot as plt
+import random
 
 # *******************************************************************
 # DEFINICIONES DE OBJETOS Y FUNCIONES
@@ -22,6 +23,7 @@ def Imprimir_Jugador(j, Personas):
 
 def Iteracion(Poblacion):
     for u in Poblacion:
+        #Le damos a cada habitante 4 oportunidades para no cumplir la norma
         for y in range(0,4):
             s = uniform(0,1)
             b = u.Boldness
@@ -43,6 +45,9 @@ def Iteracion(Poblacion):
 # *******************************************************************
 
 NumGeneraciones = 100
+#Boldness y vengefulness toman uno de ocho niveles, desde 0/7 hasta 7/7
+#Creamos lista con niveles
+Niveles = [0.0,(1.0/7.0),(2.0/7.0),(3.0/7.0),(4.0/7.0),(5.0/7.0),(6.0/7.0),1.0]
 
 # *******************************************************************
 
@@ -53,14 +58,13 @@ Boldness_1 =[]
 Vengefulness_1 = []
 # Falta inicializar lista de Boldness y Vengefulness
 
-# Creamos la poblacion inicial de manera aleatoria
+# Creamos la poblacion inicial donde cada habitante tiene un nivel aleatorio de boldness y vengefulness 
 for i in range(0,20):
-    Personas.append(Jugadores(0, uniform(0,1),uniform(0,1)))
+    Personas.append(Jugadores(0, random.choice(Niveles) ,random.choice(Niveles) ))
 #Creamos un bucle para iterar 100 nuevas generaciones
-
 print "Corriendo iteraciones..."
 for y in range(0,NumGeneraciones):
-    # Corre cuatro veces la iteración del juego
+
     Personas = Iteracion(Personas)
 
     Scores.append([u.Score for u in Personas])
@@ -112,7 +116,7 @@ for y in range(0,NumGeneraciones):
         Personas = Personas_nuevas
         x = 20 - len(Personas)
         for i in range(x):
-            Personas.append(Jugadores(0, uniform(0,1),uniform(0,1)))
+            Personas.append(Jugadores(0, random.choice(Niveles),random.choice(Niveles)))
     else:
         Personas = Personas_nuevas[:20]
 
@@ -121,6 +125,9 @@ print "Listo!"
 print "Dibujando..."
 f, axarr = plt.subplots(3, sharex=True)
 axarr[0].set_ylabel('Score')
+axarr[1].set_ylabel('Boldness')
+axarr[2].set_ylabel('Vengefulness')
+axarr[2].set_xlabel('Generation')
 x = [np.mean(u) for u in Scores]
 y = [np.mean(u) for u in Boldness_1]
 z = [np.mean(u) for u in Vengefulness_1]
