@@ -22,6 +22,8 @@ def Imprimir_Jugador(j, Personas):
     print("Vengefulness: " + str(Personas[j].Vengefulness))
 
 def Iteracion(Poblacion):
+    Sigue_norma=[]
+    Corrompe_norma=[]
     for u in Poblacion:
         #Le damos a cada habitante 4 oportunidades para no cumplir la norma
         for y in range(0,4):
@@ -29,7 +31,8 @@ def Iteracion(Poblacion):
             b = u.Boldness
             if s<b:
                 u.Score +=3
-                for y in Personas:
+                Corrompe_norma.append(1)
+                for y in Poblacion:
                     s1= uniform(0,1)
                     if y!=u:
                         y.Score += -1
@@ -38,16 +41,16 @@ def Iteracion(Poblacion):
                         if r<y.Vengefulness:
                             u.Score +=-9
                             y.Score += -2
-    return Poblacion
+            else:
+                Corrompe_norma.append(0)
+    return Poblacion, Corrompe_norma
+
 
 # *******************************************************************
 # PARAMETROS DEL MODELO
 # *******************************************************************
 
 NumGeneraciones = 100
-#Boldness y vengefulness toman uno de ocho niveles, desde 0/7 hasta 7/7
-#Creamos lista con niveles
-Niveles = [0.0,(1.0/7.0),(2.0/7.0),(3.0/7.0),(4.0/7.0),(5.0/7.0),(6.0/7.0),1.0]
 
 # *******************************************************************
 
@@ -56,16 +59,18 @@ Personas = []
 Scores =[]
 Boldness_1 =[]
 Vengefulness_1 = []
+Corrompe_norma_1 = []
+
 # Falta inicializar lista de Boldness y Vengefulness
 
-# Creamos la poblacion inicial donde cada habitante tiene un nivel aleatorio de boldness y vengefulness 
+# Creamos la poblacion inicial donde cada habitante tiene un nivel aleatorio de boldness y vengefulness
 for i in range(0,20):
-    Personas.append(Jugadores(0, random.choice(Niveles) ,random.choice(Niveles) ))
+    Personas.append(Jugadores(0, 0.75 ,0.75 ))
 #Creamos un bucle para iterar 100 nuevas generaciones
 print "Corriendo iteraciones..."
 for y in range(0,NumGeneraciones):
 
-    Personas = Iteracion(Personas)
+    Personas , Corrompe_norma_1= Iteracion(Personas)
 
     Scores.append([u.Score for u in Personas])
     Boldness_1.append([u.Boldness for u in Personas])
@@ -116,25 +121,30 @@ for y in range(0,NumGeneraciones):
         Personas = Personas_nuevas
         x = 20 - len(Personas)
         for i in range(x):
-            Personas.append(Jugadores(0, random.choice(Niveles),random.choice(Niveles)))
+            Personas.append(Jugadores(0, 0.75 ,0.75))
     else:
         Personas = Personas_nuevas[:20]
-
+print Corrompe_norma_1
 print "Listo!"
 
 print "Dibujando..."
 f, axarr = plt.subplots(3, sharex=True)
+
+
 axarr[0].set_ylabel('Score')
 axarr[1].set_ylabel('Boldness')
 axarr[2].set_ylabel('Vengefulness')
 axarr[2].set_xlabel('Generation')
+
 x = [np.mean(u) for u in Scores]
 y = [np.mean(u) for u in Boldness_1]
 z = [np.mean(u) for u in Vengefulness_1]
-axarr[0].plot(x)
-axarr[1].plot(y)
-axarr[2].plot(z)
+
+axarr[0].plot( x)
+axarr[1].plot( y, 'y--', linewidth = 1)
+axarr[2].plot( z, 'r-.', linewidth = 1)
 axarr[0].set_title('')
+
 # axarr[1].scatter(x, y)
 plt.show()
 
