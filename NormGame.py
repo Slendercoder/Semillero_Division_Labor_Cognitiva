@@ -31,18 +31,18 @@ def Iteracion(Poblacion):
             b = u.Boldness
             if s<b:
                 u.Score +=3
-                Corrompe_norma.append(1)
+                Corrompe_norma.append(0)
                 for y in Poblacion:
-                    s1= uniform(0,1)
                     if y!=u:
                         y.Score += -1
-                    elif s1<s and y!=u:
-                        r = uniform(0,1)
-                        if r<y.Vengefulness:
-                            u.Score +=-9
-                            y.Score += -2
+                        s1 = uniform(0,1)
+                        if s1<s:
+                            r = uniform(0,1)
+                            if r<y.Vengefulness:
+                                u.Score +=-9
+                                y.Score += -2
             else:
-                Corrompe_norma.append(0)
+                Corrompe_norma.append(1)
     return Poblacion, Corrompe_norma
 
 def Experimento(Boldness_inicial, Vengefulness_inicial):
@@ -150,23 +150,47 @@ def Experimento(Boldness_inicial, Vengefulness_inicial):
 # *******************************************************************
 
 NumExp = 100
-NumGeneraciones = 500
+NumGeneraciones = 300
 Boldness_inicial = 0.25
 Vengefulness_inicial = 0.75
 
 # *******************************************************************
 
 X = []
+Y = []
+Z = []
+U = []
 
 # Esto dentro de un bucle
-x, y, z, u = Experimento(0.25, 0.75)
-X.append(x)
+for i in range(NumExp):
+    print "Comenzando experimento " + str(i) + "esimo"
+    x, y, z, u = Experimento(Boldness_inicial, Vengefulness_inicial)
+    X.append(x)
+    Y.append(y)
+    Z.append(z)
+    U.append(u)
 
 # Hallamos los promedios por experimento
 x = []
 for i in range(NumGeneraciones):
     gen = [e[i] for e in X]
     x.append(np.mean(gen))
+
+y = []
+for i in range(NumGeneraciones):
+    gen = [e[i] for e in Y]
+    y.append(np.mean(gen))
+
+z = []
+for i in range(NumGeneraciones):
+    gen = [e[i] for e in Z]
+    z.append(np.mean(gen))
+
+u = []
+for i in range(NumGeneraciones):
+    gen = [e[i] for e in U]
+    u.append(np.mean(gen))
+
 
 # print Corrompe_norma_1
 # print "Listo!"
@@ -191,7 +215,7 @@ axarr[2].plot(z)
 axarr[3].plot(u)
 # axarr[1].plot( y, 'y--', linewidth = 1)
 # axarr[2].plot( z, 'r-.', linewidth = 1)
-axarr[0].set_title('')
+axarr[0].set_title('Boldness =' + str(Boldness_inicial) + ' Vengefulness =' + str(Vengefulness_inicial))
 
 # axarr[1].scatter(x, y)
 plt.show()
