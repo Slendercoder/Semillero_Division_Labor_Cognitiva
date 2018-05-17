@@ -24,23 +24,40 @@ def Imprimir_Jugador(j, Personas):
 
 def Iteracion(Poblacion):
     Corrompe_norma=[]
-    for u in Poblacion:
+    # for u in Poblacion:
+    #     #Le damos a cada habitante 4 oportunidades para no cumplir la norma
+    #     for k in range(0,4):
+    #         s = uniform(0,1)
+    #         b = u.Boldness
+    #         if s < b:
+    #             u.Score +=3
+    #             Corrompe_norma.append(0)
+    #             for y in Poblacion:
+    #                 if y!=u:
+    #                     y.Score += -1
+    #                     s1 = uniform(0,1)
+    #                     if s1 < s:
+    #                         r = uniform(0,1)
+    #                         if r < y.Vengefulness:
+    #                             u.Score += -9
+    #                             y.Score += -2
+    for u in range(len(Poblacion)):
         #Le damos a cada habitante 4 oportunidades para no cumplir la norma
-        for y in range(0,4):
+        for k in range(0,4):
             s = uniform(0,1)
-            b = u.Boldness
-            if s<b:
-                u.Score +=3
+            b = Poblacion[u].Boldness
+            if s < b:
+                Poblacion[u].Score +=3
                 Corrompe_norma.append(0)
-                for y in Poblacion:
+                for y in range(len(Poblacion)):
                     if y!=u:
-                        y.Score += -1
+                        Poblacion[y].Score += -1
                         s1 = uniform(0,1)
-                        if s1<s:
+                        if s1 < s:
                             r = uniform(0,1)
-                            if r<y.Vengefulness:
-                                u.Score +=-9
-                                y.Score += -2
+                            if r < Poblacion[y].Vengefulness:
+                                Poblacion[u].Score += -9
+                                Poblacion[y].Score += -2
             else:
                 Corrompe_norma.append(1)
     return Poblacion, Corrompe_norma
@@ -73,9 +90,10 @@ def Experimento(Boldness_inicial, Vengefulness_inicial):
     print "Corriendo iteraciones..."
     for y in range(0,NumGeneraciones):
 
-        Personas , aux = Iteracion(Personas)
+        Personas, aux = Iteracion(Personas)
 
         Scores.append([u.Score for u in Personas])
+        # print "i: " + str(y) + " Scores: ", Scores
         Boldness_1.append([u.Boldness for u in Personas])
         Vengefulness_1.append([u.Vengefulness for u in Personas])
         Corrompe_norma_1.append(aux)
@@ -149,9 +167,9 @@ def Experimento(Boldness_inicial, Vengefulness_inicial):
 # PARAMETROS DEL MODELO
 # *******************************************************************
 
-NumExp = 100
+NumExp = 50
 NumGeneraciones = 300
-Boldness_inicial = 0.25
+Boldness_inicial = 0.75
 Vengefulness_inicial = 0.75
 
 # *******************************************************************
@@ -165,6 +183,8 @@ U = []
 for i in range(NumExp):
     print "Comenzando experimento " + str(i) + "esimo"
     x, y, z, u = Experimento(Boldness_inicial, Vengefulness_inicial)
+    # for i in range(len(x)):
+    #     print "i: " + str(i) + " x: " + str(x[i])
     X.append(x)
     Y.append(y)
     Z.append(z)
