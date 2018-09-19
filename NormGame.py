@@ -52,12 +52,9 @@ def Iteracion(Poblacion):
                 for y in range(len(Poblacion)):
                     if y!=u:
                         Poblacion[y].Score += -1
-                        s1 = uniform(0,1)
-                        if s1 < s:
-                            r = uniform(0,1)
-                            if r < Poblacion[y].Vengefulness:
-                                Poblacion[u].Score += -9
-                                Poblacion[y].Score += -2
+                        if s < Poblacion[y].Vengefulness:
+                            Poblacion[u].Score += -9
+                            Poblacion[y].Score += -2
             else:
                 Corrompe_norma.append(1)
     return Poblacion, Corrompe_norma
@@ -169,8 +166,8 @@ def Experimento(Boldness_inicial, Vengefulness_inicial):
 
 NumExp = 50
 NumGeneraciones = 300
-Boldness_inicial = 0.75
-Vengefulness_inicial = 0.75
+Boldness_inicial = 0.9
+Vengefulness_inicial = 0.6
 
 # *******************************************************************
 
