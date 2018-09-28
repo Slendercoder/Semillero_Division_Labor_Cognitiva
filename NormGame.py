@@ -12,6 +12,7 @@ import scipy as sp
 # *******************************************************************
 
 class Jugadores():
+    # Se define un objeto jugadores con tres propiedades
     def __init__(self, S, B, V):
         self.Score = S
         self.Boldness = B
