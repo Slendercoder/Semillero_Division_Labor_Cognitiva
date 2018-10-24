@@ -5,7 +5,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import random
-import scipy as sp
+# import scipy as sp
 import sys
 
 random.seed(time.time())
