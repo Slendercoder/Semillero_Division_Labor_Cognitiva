@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import random
 import scipy as sp
 import sys
+import time
 
 random.seed(time.time())
 
