@@ -1,7 +1,6 @@
 
 #-*- coding: utf-8 -*-
-from random import uniform
-from random import randint
+from random import uniform, randint
 import numpy as np
 import matplotlib.pyplot as plt
 import random
@@ -126,12 +125,14 @@ def Experimento(Boldness_inicial, Vengefulness_inicial):
         # Se crea una nueva lista dependiendo de la descendencia de los buenos y los 			regulares
         Personas_nuevas =[]
         for i in indices_buenos:
+            Personas[i].Score = 0
             Personas_nuevas.append(Personas[i])
             Personas_nuevas.append(Personas[i])
 
         # print "tamano de los nuevos buenos: " + str(len(Personas_nuevas))
 
         for i in indices_regulares:
+            Personas[i].Score = 0
             Personas_nuevas.append(Personas[i])
 
         # print "Tamano de los nuevos regulares: " + str(len(Personas_nuevas))
@@ -154,6 +155,13 @@ def Experimento(Boldness_inicial, Vengefulness_inicial):
         else:
             Personas = Personas_nuevas[:20]
 
+        # Aqui va la mutacion
+        for p in Personas:
+            r = uniform(0,1)
+            if r < 0.01:
+                p.Boldness = uniform(0,1)
+                p.Vengefulness = uniform(0,1)
+
     x = [np.mean(u) for u in Scores]
     y = [np.mean(u) for u in Boldness_1]
     z = [np.mean(u) for u in Vengefulness_1]
@@ -165,7 +173,7 @@ def Experimento(Boldness_inicial, Vengefulness_inicial):
 # PARAMETROS DEL MODELO
 # *******************************************************************
 
-NumExp = 50
+NumExp = 30
 NumGeneraciones = 300
 Boldness_inicial = 0.9
 Vengefulness_inicial = 0.6
